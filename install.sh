@@ -2,7 +2,6 @@
 set -e
 
 # --- 1. Configuration ---
-# Replace with your actual GitHub username
 GH_USER="spetroll" 
 DOT_DIR="$HOME/.dotfiles"
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -10,14 +9,14 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 echo "🚀 Starting terminal bootstrap..."
 
 # --- 2. System Dependencies ---
-echo "📦 Installing system dependencies..."
-# Check if sudo is available, if not, run commands directly
+# Determine if sudo is needed/available
 if command -v sudo >/dev/null 2>&1; then
     SUDO="sudo"
 else
     SUDO=""
 fi
 
+echo "📦 Installing system dependencies..."
 $SUDO apt update && $SUDO apt install -y zsh git curl fzf zoxide
 
 # --- 3. Dotfiles Repository ---
@@ -30,8 +29,7 @@ else
 fi
 
 # --- 4. Clean up "Weird States" ---
-# Nuking Zinit and p10k cache ensures a clean compilation of plugins
-echo "🧹 Cleaning previous Zinit state..."
+echo "🧹 Cleaning previous Zinit/Prompt state..."
 rm -rf "${XDG_DATA_HOME:-${HOME}/.local/share}/zinit"
 rm -rf ~/.cache/p10k-instant-prompt-*
 
@@ -49,10 +47,10 @@ fi
 
 # --- 7. Finalize Shell ---
 echo "✅ Setting Zsh as default shell..."
-if [ "$SHELL" != "$(which zsh)" ]; then
-    $SUDO chsh -s $(which zsh) $(whoami)
-fi
+# Find the absolute path of zsh
+ZSH_PATH=$(command -v zsh)
+$SUDO chsh -s "$ZSH_PATH" "$(whoami)"
 
 echo "✨ Setup complete! Switching to Zsh..."
-# This re-launches Zsh; Zinit will now download plugins cleanly
-exec zsh -l
+# Use absolute path to zsh to avoid "command not found" in current bash session
+exec "$ZSH_PATH" -l
