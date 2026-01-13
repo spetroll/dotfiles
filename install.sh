@@ -46,10 +46,14 @@ if [ ! -d "$ZINIT_HOME" ]; then
 fi
 
 # --- 7. Finalize Shell ---
-echo "✅ Setting Zsh as default shell..."
-# Find the absolute path of zsh
+# SAFETY CHECK: Only change shell if the binary actually exists and is executable
 ZSH_PATH=$(command -v zsh)
-$SUDO chsh -s "$ZSH_PATH" "$(whoami)"
+if [ -n "$ZSH_PATH" ] && [ -x "$ZSH_PATH" ]; then
+    echo "✅ Setting shell to $ZSH_PATH"
+    $SUDO usermod -s "$ZSH_PATH" "$(whoami)"
+else
+    echo "❌ ERROR: Zsh not found. Keeping current shell for safety."
+fi
 
 echo "✨ Setup complete! Switching to Zsh..."
 # Use absolute path to zsh to avoid "command not found" in current bash session
