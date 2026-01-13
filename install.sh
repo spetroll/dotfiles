@@ -10,9 +10,15 @@ ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
 echo "🚀 Starting terminal bootstrap..."
 
 # --- 2. System Dependencies ---
-# Install the binaries BEFORE Zsh starts so Zinit doesn't break
 echo "📦 Installing system dependencies..."
-sudo apt update && sudo apt install -y zsh git curl fzf zoxide
+# Check if sudo is available, if not, run commands directly
+if command -v sudo >/dev/null 2>&1; then
+    SUDO="sudo"
+else
+    SUDO=""
+fi
+
+$SUDO apt update && $SUDO apt install -y zsh git curl fzf zoxide
 
 # --- 3. Dotfiles Repository ---
 if [ ! -d "$DOT_DIR" ]; then
