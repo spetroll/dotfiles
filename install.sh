@@ -50,7 +50,7 @@ fi
 # --- 7. Finalize Shell ---
 echo "✅ Setting Zsh as default shell..."
 if [ "$SHELL" != "$(which zsh)" ]; then
-    sudo chsh -s $(which zsh) $(whoami)
+    $SUDO chsh -s $(which zsh) $(whoami)
 fi
 
 echo "✨ Setup complete! Switching to Zsh..."
